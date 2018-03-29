@@ -15,6 +15,10 @@ class Polynomial():
     ZERO_DEGREE = None
 
     def __init__(self, lst):
+
+        if not isinstance(lst, list):
+            raise TypeError("Can only construct Polynomial from list, not {}".format(type(lst).__name__))
+
         self.data = lst
 
         # Remove trailing zeroes
@@ -40,7 +44,28 @@ class Polynomial():
     
     @staticmethod
     def define_zero_degree(value):
+        """ Set the value to be returned when someone calls
+            Polynomial([]).degree(). Default degree of the zero
+            polynomial is None, which raises a ValueError
+        """
         self.ZERO_DEGREE = value
+
+    def __call__(self, value, zero_element=0):
+        """ Evaluates the polynomial at the given input value.
+            In the event that the polynomial is the zero
+            polynomial, zero_element is returned.
+        """
+        if self.data == []:
+            return zero_element
+
+        total = None
+        for i, val in enumerate(self.data):
+            if total == None:
+                total = self.data[i] * value ** i
+            else:
+                total += self.data[i] * value ** i
+
+        return total
 
     def __iter__(self):
         """ Iterates over the coefficients, starting from the
@@ -57,13 +82,14 @@ class Polynomial():
         return Polynomial(self.data)
 
     def __neg__(self):
-        tgt = [-coeff for coeff in self.data]
-        return Polynomial(tgt)
+        return Polynomial([-coeff for coeff in self.data])
 
     def __add__(self, other):
 
         if not isinstance(other, Polynomial):
             tgt = self.data[:]
+            if not tgt:
+                return Polynomial([other])
             tgt[0] += other
             return Polynomial(tgt)
 
@@ -131,12 +157,18 @@ class Polynomial():
     def _lc_of_one_div(self, other):
         p1 = self
         tgt = Polynomial([])
+        X = Polynomial([0,1])
+        ZERO = Polynomial([])
 
-        while p1.degree() >= other.degree():
-            partial_quotient = Polynomial.X ** (p1.degree() - p2.degree())
+        while p1 != ZERO and p1.degree() >= other.degree():
+            partial_quotient = X ** (p1.degree() - other.degree())
             partial_quotient *= p1._leading_coefficient()
             tgt += partial_quotient
-            p1 -= other * partial_quotient
+            p2 = p1 - other * partial_quotient
+            if p2 != ZERO and p2.degree() >= p1.degree():
+                raise ValueError
+            else:
+                p1 = p2
 
         return tgt
 
@@ -150,12 +182,13 @@ class Polynomial():
         except TypeError:
             pass
 
-        lc1 = self._leading_coefficient()
-        lc2 = other._leading_coefficient()
-        if lc1 == lc1 * lc2:
+
+        try:
             return self._lc_of_one_div(other)
+        except ValueError:
+            pass
         
-        raise ValueError("Polynomial not defined over a field and leading coefficient of divisor not identity.")
+        raise ValueError("Polynomial coefficients not invertible, and leading coefficient of divisor not identity.")
 
     def __mod__(self, other):
         quot = self // other
@@ -235,5 +268,3 @@ class Polynomial():
 if __name__ == "__main__":
     x = Polynomial([0,1,2])
     y = Polynomial([0, 1])
-    
-    print(divmod(x, y))
