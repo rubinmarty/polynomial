@@ -34,8 +34,10 @@ class ModularInt():
             else:
                 return ModularInt(self.value + other.value, self.modulus)
 
-        else:
+        if isinstance(self.value + other, int):
             return ModularInt(self.value + other, self.modulus)
+        
+        return NotImplemented
 
     def __sub__(self, other):
         return self + (-other)
@@ -47,8 +49,10 @@ class ModularInt():
             else:
                 return ModularInt(self.value * other.value, self.modulus)
 
-        else:
+        if isinstance(self.value * other, int):
             return ModularInt(self.value * other, self.modulus)
+        
+        return NotImplemented
 
     def __pow__(self, exp):
         if not isinstance(exp, int):

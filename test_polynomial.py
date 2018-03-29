@@ -88,6 +88,18 @@ def test_ring_multiplication_complex():
     p2 = Polynomial([x2, x1, x2])
     assert p1 * p2 == Polynomial([2, 1, 3, 2, 2])
 
+def test_zero_exponentiation():
+    p1 = Polynomial([])
+    assert p1 == p1 ** 1
+    assert p1 == p1 ** 2
+    assert p1 == p1 ** 1000000000
+
+def test_exponentiation():
+    p1 = Polynomial([1, 1])
+    assert p1 ** 1 == p1
+    assert p1 ** 2 == Polynomial([1, 2, 1])
+    assert p1 ** 3 == Polynomial([1, 3, 3, 1])
+
 def test_field_division():
     p1 = Polynomial([2,7,6])
     p2 = Polynomial([1,2])

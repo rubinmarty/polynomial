@@ -147,8 +147,9 @@ class Polynomial():
         ZERO = Polynomial([])
 
         while p1 != ZERO and p1.degree() >= other.degree():
-            partial_quotient = X ** (p1.degree() - other.degree())
-            partial_quotient *= p1._leading_coefficient() / other._leading_coefficient()
+            partial_quotient = p1._leading_coefficient() / other._leading_coefficient()
+            if p1.degree() != other.degree():
+                partial_quotient *= (X ** (p1.degree() - other.degree()))
             tgt += partial_quotient
             p1 -= other * partial_quotient
 
@@ -161,8 +162,9 @@ class Polynomial():
         ZERO = Polynomial([])
 
         while p1 != ZERO and p1.degree() >= other.degree():
-            partial_quotient = X ** (p1.degree() - other.degree())
-            partial_quotient *= p1._leading_coefficient()
+            partial_quotient = p1._leading_coefficient()
+            if p1.degree() != other.degree():
+                partial_quotient *= X ** (p1.degree() - other.degree())
             tgt += partial_quotient
             p2 = p1 - other * partial_quotient
             if p2 != ZERO and p2.degree() >= p1.degree():
@@ -194,17 +196,29 @@ class Polynomial():
         quot = self // other
         return self - (quot * other) 
 
-    def __pow__(self, other):
-        """ TODO: Make this not terribly inefficient """
-        if not isinstance(other, int):
+    def __pow__(self, exp):
+        
+        if not isinstance(exp, int):
             raise TypeError
+        if exp < 1:
+            raise ValueError
 
-        if other == 0:
-            return 1
-        if other < 0:
-            raise ValueError("Cannot raise polynomials to {} power".format(other))
+        # populate exponents that are powers of 2
+        saved = {0 : 1, 1 : self} 
+        i = 1
+        while i * 2 <= exp:
+            saved[i * 2] = saved[i] * saved[i]
+            i *= 2
 
-        return self * self ** (other - 1)
+        # compute return value
+        tgt = 1
+        while i > 0:
+            if i <= exp:
+                exp -= i
+                tgt *= saved[i]
+            i //= 2
+
+        return tgt
 
     def __radd__(self, other):
         return self + other
