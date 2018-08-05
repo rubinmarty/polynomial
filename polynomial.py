@@ -1,5 +1,5 @@
-class Polynomial():
-    
+class Polynomial:
+
     """ A class for constructing polynomials over arbitrary
         rings or fields. Because this code is generalized for
         polynomials with coefficients of many algebraic
@@ -17,14 +17,17 @@ class Polynomial():
     def __init__(self, lst):
 
         if not isinstance(lst, list):
-            raise TypeError("Can only construct Polynomial from list, not {}".format(type(lst).__name__))
+            raise TypeError(
+                "Can only construct Polynomial from list, not {}".format(
+                    type(lst).__name__
+                )
+            )
 
         self.data = lst
 
         # Remove trailing zeroes
         while self.data and self._leading_coefficient() == 0:
             self.data.pop()
-    
 
     def __len__(self):
         """ Alias for self.degree() """
@@ -41,7 +44,7 @@ class Polynomial():
                 raise ValueError("Zero Polynomial has undefined degree")
             return self.ZERO_DEGREE
         return len(self.data) - 1
-    
+
     @staticmethod
     def define_zero_degree(value):
         """ Set the value to be returned when someone calls
@@ -108,23 +111,23 @@ class Polynomial():
                 tgt[i] = v
             else:
                 tgt[i] += v
-        
+
         return Polynomial(tgt)
-    
+
     def __sub__(self, other):
         return self + (-other)
 
     def __mul__(self, other):
-        
+
         if not isinstance(other, Polynomial):
-            return Polynomial([other*i for i in self.data])
-        
+            return Polynomial([other * i for i in self.data])
+
         ZERO = Polynomial([])
         if self == ZERO or other == ZERO:
             return ZERO
 
         length = self.degree() + other.degree() + 1
-        
+
         tgt = [None] * length
         for i, v in enumerate(self):
             for j, w in enumerate(other):
@@ -132,7 +135,7 @@ class Polynomial():
                     tgt[i + j] = v * w
                 else:
                     tgt[i + j] += v * w
-        
+
         return Polynomial(tgt)
 
     def _leading_coefficient(self):
@@ -143,13 +146,13 @@ class Polynomial():
     def _field_div(self, other):
         p1 = self
         tgt = Polynomial([])
-        X = Polynomial([0,1])
+        X = Polynomial([0, 1])
         ZERO = Polynomial([])
 
         while p1 != ZERO and p1.degree() >= other.degree():
             partial_quotient = p1._leading_coefficient() / other._leading_coefficient()
             if p1.degree() != other.degree():
-                partial_quotient *= (X ** (p1.degree() - other.degree()))
+                partial_quotient *= X ** (p1.degree() - other.degree())
             tgt += partial_quotient
             p1 -= other * partial_quotient
 
@@ -158,7 +161,7 @@ class Polynomial():
     def _lc_of_one_div(self, other):
         p1 = self
         tgt = Polynomial([])
-        X = Polynomial([0,1])
+        X = Polynomial([0, 1])
         ZERO = Polynomial([])
 
         while p1 != ZERO and p1.degree() >= other.degree():
@@ -184,27 +187,28 @@ class Polynomial():
         except (TypeError, ValueError):
             pass
 
-
         try:
             return self._lc_of_one_div(other)
         except ValueError:
             pass
-        
-        raise ValueError("Polynomial coefficients not invertible, and leading coefficient of divisor not identity.")
+
+        raise ValueError(
+            "Polynomial coefficients not invertible, and leading coefficient of divisor not identity."
+        )
 
     def __mod__(self, other):
         quot = self // other
-        return self - (quot * other) 
+        return self - (quot * other)
 
     def __pow__(self, exp):
-        
+
         if not isinstance(exp, int):
             raise TypeError
         if exp < 1:
             raise ValueError
 
         # populate exponents that are powers of 2
-        saved = {0 : 1, 1 : self} 
+        saved = {0: 1, 1: self}
         i = 1
         while i * 2 <= exp:
             saved[i * 2] = saved[i] * saved[i]
@@ -222,10 +226,13 @@ class Polynomial():
 
     def __radd__(self, other):
         return self + other
+
     def __rsub__(self, other):
         return self - other
+
     def __rmul__(self, other):
         return self * other
+
     """
     def __rfloordiv__(self, other):
         return self // other
@@ -233,10 +240,9 @@ class Polynomial():
         return self % other
     """
 
-
     def __repr__(self):
         return "Polynomial(" + str(self.data) + ")"
-    
+
     """   
     def __str__(self):
         return str(self.data)
@@ -275,10 +281,9 @@ class Polynomial():
             tgt = self.str_with_var(h)
             self.data = save
             return tgt
-    """          
-   
-            
-        
+    """
+
+
 if __name__ == "__main__":
-    x = Polynomial([0,1,2])
+    x = Polynomial([0, 1, 2])
     y = Polynomial([0, 1])
