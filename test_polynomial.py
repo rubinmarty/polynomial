@@ -92,13 +92,25 @@ def test_zero_exponentiation():
     p1 = Polynomial([])
     assert p1 == p1 ** 1
     assert p1 == p1 ** 2
-    assert p1 == p1 ** 1000000000
 
 def test_exponentiation():
     p1 = Polynomial([1, 1])
     assert p1 ** 1 == p1
     assert p1 ** 2 == Polynomial([1, 2, 1])
     assert p1 ** 3 == Polynomial([1, 3, 3, 1])
+
+def test_fast_exponentiation():
+    assert Polynomial([]) ** 1000000000 == Polynomial([])
+    assert Polynomial([1]) ** 1000000000 == Polynomial([1])
+
+def test_finite_ring_exponentiation():
+    x0 = ModularInt(0, 4)
+    x1 = ModularInt(1, 4)
+    x2 = ModularInt(2, 4)
+    x3 = ModularInt(3, 4)
+    assert Polynomial([x3]) ** 1000000000 == 1
+    assert Polynomial([])
+
 
 def test_field_division():
     p1 = Polynomial([2,7,6])
@@ -139,10 +151,10 @@ def test_complex_legal_ring_division():
 def test_immutability():
     p1 = Polynomial([1])
     p2 = p1
-    p1 += Polynomial([2])
+    p1 += 1
     assert p2 == Polynomial([1])
 
-def test_evaluation_zero():
+def test_evaluation_of_zero():
     p1 = Polynomial([])
     assert p1(5) == 0
 
@@ -152,6 +164,7 @@ def test_evaluation_zero_with_zeroelement():
 
 def test_evaluation_nonzero_with_zeroelement():
     p1 = Polynomial([1,1,1])
+    # zero_element has no effect because p1 is nonzero
     assert p1(5, zero_element=[]) == 31
 
 def test_evaluation_on_integers():

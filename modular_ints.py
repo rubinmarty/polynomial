@@ -54,6 +54,22 @@ class ModularInt():
         
         return NotImplemented
 
+    def __truediv__(self, other):
+        """Try to multiply by the divisor's inverse
+        in the given modulus, and return ValueError
+        when divisor is not invertible.
+        """
+
+        if isinstance(other, ModularInt):
+            if self.modulus != other.modulus:
+                raise ValueError("Can't divide by a value with a different modulus.")
+        elif isinstance(other, int):
+            other = ModularInt(other, self.modulus)
+        else:
+            raise TypeError
+
+        return self * other.inverse()
+
     def __pow__(self, exp):
         if not isinstance(exp, int):
             raise TypeError("Exponent must be of type int, not {}".format(type(value).__name__))
@@ -62,20 +78,6 @@ class ModularInt():
 
         return ModularInt(self.value.__pow__(exp, self.modulus), self.modulus)
 
-
-        """
-        vals = {0 : ModularInt(1, self.modulus), 1 : self}
-
-        def loop(exp):
-            if exp in vals:
-                return vals[exp]
-            else:
-                tgt = loop(exp // 2) * loop(exp - exp // 2)
-                vals[exp] = tgt
-                return tgt
-
-        return loop(exp)
-        """
 
     def __radd__(self, other):
         return self + other

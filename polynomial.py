@@ -181,7 +181,7 @@ class Polynomial():
 
         try:
             return self._field_div(other)
-        except TypeError:
+        except (TypeError, ValueError):
             pass
 
 

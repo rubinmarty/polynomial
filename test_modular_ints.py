@@ -93,7 +93,7 @@ def test_power():
     assert ModularInt(2, 5) ** 3 == 3
     assert ModularInt(2, 5) ** 4 == 1
 
-def test_power_speed():
+def test_power_efficiency():
     assert ModularInt(7, 10) ** 10000000000 == 1
 
 def test_zero_has_no_inverse():
@@ -108,6 +108,35 @@ def test_find_inverse():
     for i in range(1, 97):
         x = ModularInt(i, 97)
         assert x * x.inverse() == 1
+
+def test_illegal_division_with_different_moduli():
+    x = ModularInt(1, 4)
+    y = ModularInt(1, 3)
+    with pytest.raises(ValueError) as _:
+        x / y
+
+def test_illegal_division_despite_solution():
+    x = ModularInt(10, 15)
+    y = ModularInt(5, 15)
+    # ModularInt(2, 15) is a solution, but will not be returned
+    with pytest.raises(ValueError) as _:
+        x / y
+
+def test_legal_division():
+    x = ModularInt(2, 7)
+    y = ModularInt(5, 7)
+    z = ModularInt(6, 7)
+    assert x / y == z
+    assert x / z == y
+
+def test_legal_division_not_in_field():
+    x = ModularInt(2, 6)
+    y = ModularInt(5, 6)
+    z = ModularInt(4, 6)
+    assert x / y == z
+    with pytest.raises(ValueError) as _:
+        # illegal division despite solution's existence
+        x / z == y 
 
 def test_repr():
     assert repr(ModularInt(3, 5)) == "ModularInt(3, 5)"
