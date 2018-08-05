@@ -1,5 +1,7 @@
 # polynomial
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 A class for constructing polynomials over arbitrary rings or fields in python3.
 
 ## Examples
