@@ -233,55 +233,8 @@ class Polynomial:
     def __rmul__(self, other):
         return self * other
 
-    """
-    def __rfloordiv__(self, other):
-        return self // other
-    def __rmod__(self, other):
-        return self % other
-    """
-
     def __repr__(self):
         return "Polynomial(" + str(self.data) + ")"
-
-    """   
-    def __str__(self):
-        return str(self.data)
-          
-        
-        
-    def plug_in(self, val):
-        return sum([val**i * v for i,v in enumerate(self.data)], Polynomial([0]))
-
-    
-    def var_term(self, c, x, n):
-        if n == 0:
-            return "({})".format(repr(c))
-        elif n == 1:
-            return "({} * {})".format(repr(c), x)
-        else:
-            return "({} * {}^{})".format(repr(c), x, n)
-    
-    def str_with_var(self, x):
-        tgt = ""
-        for n, c in enumerate(self.data):
-            if c != 0:
-                tgt += self.var_term(c, x, n)
-                tgt += " + "
-        tgt = tgt[0:len(tgt)-3]
-        return tgt    
-        
-    def str_with_vars(self, xs):
-        if len(xs) == 1:
-            return self.str_with_var(xs[0])
-        else:
-            h = xs[0]
-            tl = xs[1:]
-            save = self.data
-            self.data = [v.str_with_vars(tl) for v in self.data]
-            tgt = self.str_with_var(h)
-            self.data = save
-            return tgt
-    """
 
 
 if __name__ == "__main__":

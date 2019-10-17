@@ -1,6 +1,9 @@
 class ModularInt:
 
-    """
+    """ A class for constructing elements of arbitrary modular rings.
+
+        Arithmetic is supported between two elements of the same
+        modular ring, as well as between ModularInts and integers.
     """
 
     def __init__(self, value, modulus):
